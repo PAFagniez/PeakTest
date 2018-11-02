@@ -86,11 +86,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         controller.setNewShapeToShape(shape)
         val newShapeValue : ShapeEnum = shape.currentShape
 
-        when(newShapeValue) {
-            ShapeEnum.SQUARE -> shapeView.setImageResource(R.drawable.shape_square)
-            ShapeEnum.CIRCLE -> shapeView.setImageResource(R.drawable.shape_circle)
-            ShapeEnum.TRIANGLE -> shapeView.setImageResource(R.drawable.shape_triangle)
-        }
+        setShapeToView(newShapeValue, shapeView)
 
         return newShapeValue
     }
