@@ -2,8 +2,8 @@ package paf.peaktest.controllers
 
 import android.os.Build
 import android.view.View
-import paf.peaktest.data.Shape
 import paf.peaktest.data.ShapeEnum
+import paf.peaktest.data.ShapeHolder
 import paf.peaktest.helpers.IdGeneratorHelper
 import java.io.Serializable
 import java.util.*
@@ -17,9 +17,10 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
     private val maxHeight = displayAreaHeight - shapeHeight
     private val minHeight = 0 + shapeHeight
 
-    var actionCounter: Int = 0
+    var actionNumber: Int = 0
 
-    var actionList : LinkedHashMap<Int, Shape> = LinkedHashMap()
+    var actionList : LinkedHashMap<Int, ShapeHolder> = LinkedHashMap()
+    var shapeHoldersToDisplayList : LinkedHashMap<Int, ShapeHolder> = LinkedHashMap()
 
     var squareNumber: Int = 0
     var circleNumber: Int = 0
@@ -35,18 +36,18 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
         return random.nextInt(maxHeight + 1 - minHeight) + minHeight
     }
 
-    fun createNewShape(shapeValue: ShapeEnum) : Shape {
-        actionCounter++
-        val shape = Shape(shapeValue, generateUniqueId(), actionCounter)
-        actionList.put(actionCounter, shape)
+    fun createNewShapeHolder(shape: ShapeEnum) : ShapeHolder {
+        actionNumber++
+        val shapeHolder = ShapeHolder(shape, generateUniqueId(), actionNumber)
+        actionList.put(actionNumber, shapeHolder)
+        shapeHoldersToDisplayList.put(actionNumber, shapeHolder)
+        incrementShapeNumber(shape)
 
-        incrementShapeNumber(shapeValue)
-
-        return shape
+        return shapeHolder
     }
 
 
-    fun generateUniqueId() : Int {
+    private fun generateUniqueId() : Int {
         val id = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             View.generateViewId()
         } else {
@@ -56,39 +57,44 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
         return id
     }
 
-    fun setNewShapeToShape(shape: Shape){
-        val newShape: ShapeEnum = when(shape.currentShape) {
+    fun setNewShapeToShapeHolder(shapeHolder: ShapeHolder){
+        val currentShape = shapeHolder.currentShape
+        val newShape: ShapeEnum? = when(currentShape) {
             ShapeEnum.SQUARE -> ShapeEnum.CIRCLE
             ShapeEnum.CIRCLE -> ShapeEnum.TRIANGLE
             ShapeEnum.TRIANGLE -> ShapeEnum.SQUARE
+            else -> {
+                null
+            }
         }
 
-        incrementShapeNumber(newShape)
-        decrementShapeNumber(shape.currentShape)
+        if(newShape != null) incrementShapeNumber(newShape)
+        if(currentShape != null) decrementShapeNumber(currentShape)
 
-        actionCounter++
-        shape.setNewShape(actionCounter, newShape)
-        actionList.put(actionCounter, shape)
+        actionNumber++
+        shapeHolder.setNewShape(actionNumber, newShape)
+        actionList[actionNumber] = shapeHolder
     }
 
-    fun undoAction () : Shape? {
+    fun undoAction () : ShapeHolder? {
 
-        return if (!actionList.isEmpty()){
+        return if (!actionList.isEmpty() || actionNumber != 0){
 
-            val lastModifiedShape = actionList.get(actionCounter)
+            val lastModifiedShapeHolder = actionList[actionNumber]
 
-            if (lastModifiedShape != null) {
-                decrementShapeNumber(lastModifiedShape.currentShape)
-                lastModifiedShape.undoAction()
-                if(!lastModifiedShape.deleted){
-                    incrementShapeNumber(lastModifiedShape.currentShape)
-                }
-                actionList.remove(actionCounter)
-                actionCounter--
+            if (lastModifiedShapeHolder != null) {
+                val currentShape = lastModifiedShapeHolder.currentShape
+                currentShape?.let { decrementShapeNumber(it) }
+
+                lastModifiedShapeHolder.undoAction()
+                lastModifiedShapeHolder.currentShape?.let { incrementShapeNumber(it) }
+
+                actionList.remove(actionNumber)
+                actionNumber--
             }
-            lastModifiedShape
+            lastModifiedShapeHolder
         } else {
-            actionCounter = 0
+            actionNumber = 0
             squareNumber = 0
             circleNumber = 0
             triangleNumber = 0
@@ -111,9 +117,14 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
         }
     }
 
-    fun deleteShape(shape: Shape){
-        shape.deleted = true
-        actionCounter++
+    fun deleteShapeHolder(shapeHolder: ShapeHolder){
+
+        shapeHolder.currentShape?.let {
+            decrementShapeNumber(it)
+            actionNumber++
+            shapeHolder.delete(actionNumber)
+            actionList[actionNumber] = shapeHolder
+        }
     }
 
     private fun incrementShapeNumber(shape: ShapeEnum) {
