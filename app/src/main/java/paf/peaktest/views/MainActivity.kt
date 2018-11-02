@@ -12,8 +12,8 @@ import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import paf.peaktest.R
 import paf.peaktest.controllers.Controller
-import paf.peaktest.data.Shape
 import paf.peaktest.data.ShapeEnum
+import paf.peaktest.data.ShapeHolder
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -64,35 +64,41 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val posX = controller.getRandomPositionX()
         val posY = controller.getRandomPositionY()
 
-        val shape = controller.createNewShape(shapeValue)
+        val shapeHolder = controller.createNewShapeHolder(shapeValue)
 
         val shapeView = ImageView(this)
-        shapeView.id = shape.id
+        shapeView.id = shapeHolder.id
 
         val params = RelativeLayout.LayoutParams(SHAPE_WIDTH, SHAPE_HEIGHT)
         params.leftMargin = posX
         params.topMargin = posY
 
-        setShapeToView(shape.currentShape, shapeView)
+        setShapeToView(shapeHolder.currentShape!!, shapeView)
 
         displayArea.addView(shapeView, params)
 
         shapeView.setOnClickListener {
-            setShapeToView(getNewShape(shape, shapeView), shapeView)
+            setShapeToView(getNewShape(shapeHolder, shapeView), shapeView)
+        }
+
+        shapeView.isLongClickable = true
+        shapeView.setOnLongClickListener {
+            deleteImageView(shapeView, shapeHolder)
+            true
         }
     }
 
-    private fun getNewShape(shape: Shape, shapeView: ImageView) : ShapeEnum {
-        controller.setNewShapeToShape(shape)
-        val newShapeValue : ShapeEnum = shape.currentShape
+    private fun getNewShape(shapeHolder: ShapeHolder, shapeView: ImageView) : ShapeEnum? {
+        controller.setNewShapeToShapeHolder(shapeHolder)
+        val newShape : ShapeEnum? = shapeHolder.currentShape
 
-        setShapeToView(newShapeValue, shapeView)
+        setShapeToView(newShape, shapeView)
 
-        return newShapeValue
+        return newShape
     }
 
-    private fun setShapeToView(shapeValue: ShapeEnum, shapeView: ImageView){
-        when(shapeValue) {
+    private fun setShapeToView(shape: ShapeEnum?, shapeView: ImageView){
+        when(shape) {
             ShapeEnum.SQUARE -> shapeView.setImageResource(R.drawable.shape_square)
             ShapeEnum.CIRCLE -> shapeView.setImageResource(R.drawable.shape_circle)
             ShapeEnum.TRIANGLE -> shapeView.setImageResource(R.drawable.shape_triangle)
@@ -101,13 +107,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun undoAction () {
 
-        if(!controller.actionList.isEmpty() && controller.actionCounter != 0){
+        if(!controller.actionList.isEmpty() && controller.actionNumber != 0){
 
-            val lastModifiedShape = controller.undoAction()
-            val shapeView = displayArea.findViewById<ImageView>(lastModifiedShape!!.id)
+            val lastModifiedShapeHolder = controller.undoAction()
+            val currentShape = lastModifiedShapeHolder?.currentShape
+            val shapeView = displayArea.findViewById<ImageView>(lastModifiedShapeHolder!!.id)
 
-            if(!lastModifiedShape.actionChangingShapeList.isEmpty()){
-                setShapeToView(lastModifiedShape.currentShape, shapeView)
+            if(!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView != null){
+
+                setShapeToView(currentShape, shapeView)
+                if(shapeView.visibility == View.GONE){
+                    shapeView.visibility = View.VISIBLE
+                }
             }
             else {
                 displayArea.removeView(shapeView)
@@ -115,7 +126,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun deleteImageView(shapeView: ImageView, shapeHolder: ShapeHolder) {
+        controller.deleteShapeHolder(shapeHolder)
+        shapeView.visibility = View.GONE
+//        displayArea.removeView(shapeView)
+    }
+
     override fun onClick(v: View?) {
     }
+
+
+    override fun onBackPressed() {
+        // do nothing.
+    }
+
 
 }
