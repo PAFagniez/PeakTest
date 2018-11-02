@@ -87,7 +87,10 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
                 currentShape?.let { decrementShapeNumber(it) }
 
                 lastModifiedShapeHolder.undoAction()
-                lastModifiedShapeHolder.currentShape?.let { incrementShapeNumber(it) }
+
+                if(!lastModifiedShapeHolder.actionList.isEmpty()) {
+                    lastModifiedShapeHolder.currentShape?.let { incrementShapeNumber(it) }
+                }
 
                 actionList.remove(actionNumber)
                 actionNumber--
