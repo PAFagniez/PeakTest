@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/displayArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </RelativeLayout>
+
+    <android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/buttonPanel"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayArea"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <Button
+            android:id="@+id/undoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/XXS"
+            android:text="Undo" />
+
+        <ImageButton
+            android:id="@+id/squareButton"
+            android:layout_width="@dimen/X"
+            android:layout_height="@dimen/X"
+            android:layout_marginLeft="@dimen/XXS"
+            android:layout_marginRight="@dimen/XXS"
+            android:background="@drawable/shape_square" />
+
+        <ImageButton
+            android:id="@+id/circleButton"
+            android:layout_width="@dimen/X"
+            android:layout_height="@dimen/X"
+            android:layout_marginLeft="@dimen/XXS"
+            android:layout_marginRight="@dimen/XXS"
+            android:background="@drawable/shape_circle" />
+
+        <ImageButton
+            android:id="@+id/triangleButton"
+            android:layout_width="@dimen/X"
+            android:layout_height="@dimen/X"
+            android:layout_marginLeft="@dimen/XXS"
+            android:layout_marginRight="@dimen/XS"
+            android:background="@drawable/shape_triangle" />
+
+        <Button
+            android:id="@+id/statsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/XXS"
+            android:text="Stats" />
+
+    </android.widget.LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
