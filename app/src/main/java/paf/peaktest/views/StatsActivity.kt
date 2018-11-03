@@ -22,9 +22,9 @@ class StatsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_stats)
 
         controller = intent.getSerializableExtra(CONTROLLER_KEY) as Controller
-        squareNumber = controller.squareNumber
-        circleNumber = controller.circleNumber
-        triangleNumber = controller.triangleNumber
+        squareNumber = controller.getSquareNumber()
+        circleNumber = controller.getCircleNumber()
+        triangleNumber = controller.getTriangleNumber()
 
         squareNumberTextView.text = "$squareNumber"
         circleNumberTextView.text = "$circleNumber"

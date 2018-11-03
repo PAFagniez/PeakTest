@@ -7,7 +7,6 @@ import paf.peaktest.data.ShapeHolder
 import paf.peaktest.helpers.IdGeneratorHelper
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int, shapeHeight: Int) : Serializable {
 
@@ -19,30 +18,30 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
     var actionNumber: Int = 0
 
-    var actionList : LinkedHashMap<Int, ShapeHolder> = LinkedHashMap()
-    var shapeHoldersToDisplayList : LinkedHashMap<Int, ShapeHolder> = LinkedHashMap()
+    var actionList : TreeMap<Int, TreeMap<Int, ShapeHolder>> = TreeMap()
+    private var squareHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
+    private var circleHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
+    private var triangleHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
+    private var deletedHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
 
-    var squareNumber: Int = 0
-    var circleNumber: Int = 0
-    var triangleNumber: Int = 0
+    private var squareNumber: Int = 0
+    private var circleNumber: Int = 0
+    private var triangleNumber: Int = 0
 
     private val random = Random()
 
-    fun getRandomPositionX() : Int{
+    private fun getRandomPositionX() : Int{
         return random.nextInt(maxWidth + 1 - minWidth) + minWidth
     }
 
-    fun getRandomPositionY() : Int{
+    private fun getRandomPositionY() : Int{
         return random.nextInt(maxHeight + 1 - minHeight) + minHeight
     }
 
     fun createNewShapeHolder(shape: ShapeEnum) : ShapeHolder {
         actionNumber++
         val shapeHolder = ShapeHolder(shape, generateUniqueId(), actionNumber, getRandomPositionX(), getRandomPositionY())
-        actionList.put(actionNumber, shapeHolder)
-        shapeHoldersToDisplayList.put(actionNumber, shapeHolder)
-        incrementShapeNumber(shape)
-
+        addNewShapeHolderToListAndUpdateActionList(shapeHolder)
         return shapeHolder
     }
 
@@ -63,87 +62,134 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
             ShapeEnum.SQUARE -> ShapeEnum.CIRCLE
             ShapeEnum.CIRCLE -> ShapeEnum.TRIANGLE
             ShapeEnum.TRIANGLE -> ShapeEnum.SQUARE
-            else -> {
-                null
-            }
+            else -> null
         }
 
-        if(newShape != null) incrementShapeNumber(newShape)
-        if(currentShape != null) decrementShapeNumber(currentShape)
+        val shapeHolderList = getShapeHolderList(currentShape)
+        val updatedShapeHolder = shapeHolderList[shapeHolder.actionNumber]
+        removeShapeHolderFromList(shapeHolder, shapeHolder.actionNumber)
 
         actionNumber++
-        shapeHolder.setNewShape(actionNumber, newShape)
-        actionList[actionNumber] = shapeHolder
+        updatedShapeHolder!!.setNewShape(actionNumber, newShape)
+        addNewShapeHolderToListAndUpdateActionList(updatedShapeHolder)
     }
 
     fun undoAction () : ShapeHolder? {
 
-        return if (!actionList.isEmpty() || actionNumber != 0){
+        if (!actionList.isEmpty() || actionNumber != 0){
+            val lastModifiedList = actionList[actionNumber]
 
-            val lastModifiedShapeHolder = actionList[actionNumber]
+            if (lastModifiedList != null && !lastModifiedList.isEmpty()) {
+                val lastModifiedShapeHolder = lastModifiedList.get(actionNumber)
 
-            if (lastModifiedShapeHolder != null) {
-                val currentShape = lastModifiedShapeHolder.currentShape
-                currentShape?.let { decrementShapeNumber(it) }
+                if(lastModifiedShapeHolder != null){
+                    removeShapeHolderFromList(lastModifiedShapeHolder, lastModifiedShapeHolder.actionNumber)
 
-                lastModifiedShapeHolder.undoAction()
-
-                if(!lastModifiedShapeHolder.actionList.isEmpty()) {
-                    lastModifiedShapeHolder.currentShape?.let { incrementShapeNumber(it) }
+                    lastModifiedShapeHolder.undoAction()
+                    addNewShapeHolderToListAndUpdateActionList(lastModifiedShapeHolder)
                 }
 
-                actionList.remove(actionNumber)
                 actionNumber--
+                return lastModifiedShapeHolder
             }
-            lastModifiedShapeHolder
+            return null
         } else {
             actionNumber = 0
             squareNumber = 0
             circleNumber = 0
             triangleNumber = 0
-            null
+            return null
         }
-
     }
 
-    fun getLastKeyFromActionList(): Int? {
+    private fun getPreviousKeyFromShapeHolderList(linkedHashMap: TreeMap<Int, ShapeHolder>): Int? {
         var lastKey = 0
 
-        return if (!actionList.isEmpty()) {
-            for (key: Int in actionList.keys){
-                lastKey = key
+        for ((i, key: Int) in linkedHashMap.keys.withIndex()){
+                if(i == linkedHashMap.size-2) lastKey = key
             }
-            lastKey
-        }
-        else {
-            null
-        }
+        return lastKey
     }
 
     fun deleteShapeHolder(shapeHolder: ShapeHolder){
+        val shapeHolderList = getShapeHolderList(shapeHolder.currentShape)
+        val updatedShapeHolder = shapeHolderList[shapeHolder.actionNumber]
+        removeShapeHolderFromList(shapeHolder, shapeHolder.actionNumber)
 
-        shapeHolder.currentShape?.let {
-            decrementShapeNumber(it)
-            actionNumber++
-            shapeHolder.delete(actionNumber)
-            actionList[actionNumber] = shapeHolder
+        actionNumber++
+        updatedShapeHolder!!.delete(actionNumber)
+        addNewShapeHolderToListAndUpdateActionList(updatedShapeHolder)
+    }
+
+    private fun addNewShapeHolderToListAndUpdateActionList(shapeHolder: ShapeHolder) {
+        val shape = shapeHolder.currentShape
+        val shapeHolderList = when(shape) {
+            ShapeEnum.SQUARE -> squareHolderList
+            ShapeEnum.CIRCLE -> circleHolderList
+            ShapeEnum.TRIANGLE -> triangleHolderList
+            null -> deletedHolderList
+        }
+
+        if(!shapeHolder.actionList.isEmpty()){
+            shapeHolderList[shapeHolder.actionNumber] = shapeHolder
+        }
+        else {
+            shapeHolderList.remove(shapeHolder.actionNumber)
+        }
+        updateActionList(shapeHolder)
+    }
+
+    private fun removeShapeHolderFromList(shapeHolder: ShapeHolder, actionNumber: Int) {
+        val shape = shapeHolder.currentShape
+        val shapeHolderList = when(shape) {
+            ShapeEnum.SQUARE -> squareHolderList
+            ShapeEnum.CIRCLE -> circleHolderList
+            ShapeEnum.TRIANGLE -> triangleHolderList
+            null -> deletedHolderList
+        }
+
+        shapeHolderList.remove(actionNumber)
+        updateActionList(shapeHolder)
+    }
+
+    private fun updateActionList(shapeHolder: ShapeHolder){
+        val shapeHolderList = when(shapeHolder.currentShape) {
+            ShapeEnum.SQUARE -> squareHolderList
+            ShapeEnum.CIRCLE -> circleHolderList
+            ShapeEnum.TRIANGLE -> triangleHolderList
+            null -> deletedHolderList
+        }
+
+        if(shapeHolderList.size > 1 && !actionList.isEmpty()){
+            val lastKeyOfList = getPreviousKeyFromShapeHolderList(shapeHolderList)
+            actionList.remove(lastKeyOfList)
+        }
+
+        actionList.remove(shapeHolder.actionNumber)
+        if (!shapeHolderList.isEmpty()){
+            actionList[shapeHolderList.lastKey()] = shapeHolderList
         }
     }
 
-    private fun incrementShapeNumber(shape: ShapeEnum) {
-        when(shape) {
-            ShapeEnum.SQUARE -> squareNumber++
-            ShapeEnum.CIRCLE -> circleNumber++
-            ShapeEnum.TRIANGLE -> triangleNumber++
+    private fun getShapeHolderList(shape: ShapeEnum?) : TreeMap<Int, ShapeHolder> {
+        return when(shape) {
+            ShapeEnum.SQUARE -> squareHolderList
+            ShapeEnum.CIRCLE -> circleHolderList
+            ShapeEnum.TRIANGLE -> triangleHolderList
+            null -> deletedHolderList
         }
     }
 
-    private fun decrementShapeNumber(shape: ShapeEnum) {
-        when(shape) {
-            ShapeEnum.SQUARE -> squareNumber--
-            ShapeEnum.CIRCLE -> circleNumber--
-            ShapeEnum.TRIANGLE -> triangleNumber--
-        }
+    fun getSquareNumber(): Int{
+        return squareHolderList.size
+    }
+
+    fun getCircleNumber(): Int{
+        return circleHolderList.size
+    }
+
+    fun getTriangleNumber(): Int{
+        return triangleHolderList.size
     }
 
 }

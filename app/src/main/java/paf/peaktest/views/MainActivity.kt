@@ -120,8 +120,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             else if (!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView == null) {
                 displayShapeView(lastModifiedShapeHolder)
             }
-            else {
+            else if (currentShape == null && shapeView != null){
                 deleteImageView(shapeView, lastModifiedShapeHolder)
+            }
+            else {
+                displayArea.removeView(shapeView)
             }
         }
     }
