@@ -4,7 +4,9 @@ import java.io.Serializable
 
 class ShapeHolder(var currentShape: ShapeEnum?,
                   var id: Int,
-                  var actionNumber: Int) : Serializable {
+                  var actionNumber: Int,
+                  var posX: Int,
+                  var posY: Int) : Serializable {
 
     var actionList: LinkedHashMap<Int, ShapeEnum?> = LinkedHashMap()
     var deleted = false

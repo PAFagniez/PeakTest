@@ -38,7 +38,7 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
     fun createNewShapeHolder(shape: ShapeEnum) : ShapeHolder {
         actionNumber++
-        val shapeHolder = ShapeHolder(shape, generateUniqueId(), actionNumber)
+        val shapeHolder = ShapeHolder(shape, generateUniqueId(), actionNumber, getRandomPositionX(), getRandomPositionY())
         actionList.put(actionNumber, shapeHolder)
         shapeHoldersToDisplayList.put(actionNumber, shapeHolder)
         incrementShapeNumber(shape)

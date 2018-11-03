@@ -61,8 +61,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun createShapeView(shapeValue: ShapeEnum) {
-        val posX = controller.getRandomPositionX()
-        val posY = controller.getRandomPositionY()
 
         val shapeHolder = controller.createNewShapeHolder(shapeValue)
 
@@ -70,8 +68,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         shapeView.id = shapeHolder.id
 
         val params = RelativeLayout.LayoutParams(SHAPE_WIDTH, SHAPE_HEIGHT)
-        params.leftMargin = posX
-        params.topMargin = posY
+        params.leftMargin = shapeHolder.posX
+        params.topMargin = shapeHolder.posY
 
         setShapeToView(shapeHolder.currentShape!!, shapeView)
 
