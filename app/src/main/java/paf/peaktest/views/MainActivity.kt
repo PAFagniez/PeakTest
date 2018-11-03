@@ -63,7 +63,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun createShapeView(shapeValue: ShapeEnum) {
 
         val shapeHolder = controller.createNewShapeHolder(shapeValue)
+        displayShapeView(shapeHolder)
+    }
 
+    private fun displayShapeView(shapeHolder: ShapeHolder) {
         val shapeView = ImageView(this)
         shapeView.id = shapeHolder.id
 
@@ -112,22 +115,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val shapeView = displayArea.findViewById<ImageView>(lastModifiedShapeHolder!!.id)
 
             if(!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView != null){
-
                 setShapeToView(currentShape, shapeView)
-                if(shapeView.visibility == View.GONE){
-                    shapeView.visibility = View.VISIBLE
-                }
+            }
+            else if (!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView == null) {
+                displayShapeView(lastModifiedShapeHolder)
             }
             else {
-                displayArea.removeView(shapeView)
+                deleteImageView(shapeView, lastModifiedShapeHolder)
             }
         }
     }
 
     private fun deleteImageView(shapeView: ImageView, shapeHolder: ShapeHolder) {
         controller.deleteShapeHolder(shapeHolder)
-        shapeView.visibility = View.GONE
-//        displayArea.removeView(shapeView)
+        displayArea.removeView(shapeView)
     }
 
     override fun onClick(v: View?) {
