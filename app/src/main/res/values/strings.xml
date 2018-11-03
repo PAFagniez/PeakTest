@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Peak Test</string>
+
+    <string name="undo">undo</string>
+    <string name="stats">Stats</string>
+
+    <!--Stats Activity-->
+    <string name="statsSquares">Squares :</string>
+    <string name="statsCircles">Circles :</string>
+    <string name="statsTriangles">Triangles :</string>
 </resources>

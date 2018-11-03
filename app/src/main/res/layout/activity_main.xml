@@ -41,22 +41,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/XXS"
-            android:text="Undo" />
+            android:text="@string/undo" />
 
         <ImageButton
             android:id="@+id/squareButton"
             android:layout_width="@dimen/X"
             android:layout_height="@dimen/X"
-            android:layout_marginLeft="@dimen/XXS"
-            android:layout_marginRight="@dimen/XXS"
+            android:layout_marginLeft="@dimen/XXXS"
+            android:layout_marginRight="@dimen/XXXS"
             android:background="@drawable/shape_square" />
 
         <ImageButton
             android:id="@+id/circleButton"
             android:layout_width="@dimen/X"
             android:layout_height="@dimen/X"
-            android:layout_marginLeft="@dimen/XXS"
-            android:layout_marginRight="@dimen/XXS"
+            android:layout_marginLeft="@dimen/XXXS"
+            android:layout_marginRight="@dimen/XXXS"
             android:background="@drawable/shape_circle" />
 
         <ImageButton
@@ -64,7 +64,7 @@
             android:layout_width="@dimen/X"
             android:layout_height="@dimen/X"
             android:layout_marginLeft="@dimen/XXS"
-            android:layout_marginRight="@dimen/XS"
+            android:layout_marginRight="@dimen/XXXS"
             android:background="@drawable/shape_triangle" />
 
         <Button
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="@dimen/XXS"
-            android:text="Stats" />
+            android:text="@string/stats" />
 
     </android.widget.LinearLayout>
 

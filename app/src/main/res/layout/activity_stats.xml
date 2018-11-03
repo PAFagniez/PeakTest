@@ -15,7 +15,7 @@
         android:layout_marginRight="163dp"
         android:layout_marginStart="163dp"
         android:layout_marginTop="16dp"
-        android:text="Stats"
+        android:text="@string/stats"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="Squares :"
+        android:text="@string/statsSquares"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
@@ -83,7 +83,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
-        android:text="Circles :"
+        android:text="@string/statsCircles"
         app:layout_constraintEnd_toStartOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/imageView4" />
@@ -95,7 +95,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginTop="32dp"
-        android:text="Traingles :"
+        android:text="@string/statsTriangles"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
