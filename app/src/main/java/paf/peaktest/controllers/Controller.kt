@@ -24,10 +24,6 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
     private var triangleHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
     private var deletedHolderList : TreeMap<Int, ShapeHolder> = TreeMap()
 
-    private var squareNumber: Int = 0
-    private var circleNumber: Int = 0
-    private var triangleNumber: Int = 0
-
     private val random = Random()
 
     private fun getRandomPositionX() : Int{
@@ -94,9 +90,6 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
             return null
         } else {
             actionNumber = 0
-            squareNumber = 0
-            circleNumber = 0
-            triangleNumber = 0
             return null
         }
     }
