@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_stats.*
 import paf.peaktest.R
 import paf.peaktest.controllers.Controller
 import paf.peaktest.data.ShapeEnum
+import paf.peaktest.data.ShapeEnum.*
 
 class StatsActivity : AppCompatActivity(), View.OnClickListener{
 
@@ -16,9 +17,6 @@ class StatsActivity : AppCompatActivity(), View.OnClickListener{
         private const val CONTROLLER_KEY = "CONTROLLER"
     }
 
-    private var squareNumber: Int = 0
-    private var circleNumber: Int = 0
-    private var triangleNumber: Int = 0
     private lateinit var controller: Controller
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,27 +24,24 @@ class StatsActivity : AppCompatActivity(), View.OnClickListener{
         setContentView(R.layout.activity_stats)
 
         controller = intent.getSerializableExtra(CONTROLLER_KEY) as Controller
-        squareNumber = controller.getSquareNumber()
-        circleNumber = controller.getCircleNumber()
-        triangleNumber = controller.getTriangleNumber()
 
-        squareNumberTextView.text = "$squareNumber"
-        circleNumberTextView.text = "$circleNumber"
-        triangleNumberTextView.text = "$triangleNumber"
+        squareNumberTextView.text = "${getShapeNumber(SQUARE)}"
+        circleNumberTextView.text = "${getShapeNumber(CIRCLE)}"
+        triangleNumberTextView.text = "${getShapeNumber(TRIANGLE)}"
 
         deleteSquaresButton.setOnClickListener {
-            controller.deleteShapeGroup(ShapeEnum.SQUARE)
-            squareNumberTextView.text = "${controller.getSquareNumber()}"
+            controller.deleteShapeGroup(SQUARE)
+            squareNumberTextView.text = "${getShapeNumber(SQUARE)}"
         }
 
         deleteCirclesButton.setOnClickListener {
-            controller.deleteShapeGroup(ShapeEnum.CIRCLE)
-            circleNumberTextView.text = "${controller.getCircleNumber()}"
+            controller.deleteShapeGroup(CIRCLE)
+            circleNumberTextView.text = "${getShapeNumber(CIRCLE)}"
         }
 
         deleteTrianglesButton.setOnClickListener {
-            controller.deleteShapeGroup(ShapeEnum.TRIANGLE)
-            triangleNumberTextView.text = "${controller.getTriangleNumber()}"
+            controller.deleteShapeGroup(TRIANGLE)
+            triangleNumberTextView.text = "${getShapeNumber(TRIANGLE)}"
         }
 
         backToMainActivityButton.setOnClickListener {
@@ -54,6 +49,14 @@ class StatsActivity : AppCompatActivity(), View.OnClickListener{
             intent.putExtra(CONTROLLER_KEY, controller)
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+    }
+
+    private fun getShapeNumber(shape: ShapeEnum): Int{
+        return when(shape) {
+            SQUARE -> controller.getSquareNumber()
+            CIRCLE -> controller.getCircleNumber()
+            TRIANGLE -> controller.getTriangleNumber()
         }
     }
 
