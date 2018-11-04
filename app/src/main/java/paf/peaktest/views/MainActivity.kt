@@ -19,8 +19,8 @@ import paf.peaktest.data.ShapeHolder
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
-        private val CONTROLLER_KEY = "CONTROLLER"
-        private val DELETE_SHAPE_GROUPS = 0
+        private const val CONTROLLER_KEY = "CONTROLLER"
+        private const val DELETE_SHAPE_GROUPS = 0
         private const val SHAPE_WIDTH = 64
         private const val SHAPE_HEIGHT = 64
     }
@@ -116,10 +116,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val currentShape = lastModifiedShapeHolder?.currentShape
             val shapeView = displayArea.findViewById<ImageView>(lastModifiedShapeHolder!!.id)
 
-            if(!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView != null){
+            if(!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null)
+                    && shapeView != null){
                 setShapeToView(currentShape, shapeView)
             }
-            else if (!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null) && shapeView == null) {
+            else if (!(lastModifiedShapeHolder.actionList.isEmpty() || currentShape == null)
+                    && shapeView == null) {
                 displayShapeView(lastModifiedShapeHolder)
             }
             else if (currentShape == null && shapeView != null){
@@ -134,9 +136,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun deleteImageView(shapeView: ImageView, shapeHolder: ShapeHolder) {
         controller.deleteShapeHolder(shapeHolder)
         displayArea.removeView(shapeView)
-    }
-
-    override fun onClick(v: View?) {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -156,7 +155,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         displayArea.removeAllViews()
         if(!actionList.isEmpty()){
             for(shapeHolderList in actionList.values) {
-                if(!shapeHolderList.isEmpty() && shapeHolderList.lastEntry().value.currentShape != null){
+                if(!shapeHolderList.isEmpty()
+                        && shapeHolderList.lastEntry().value.currentShape != null){
                     for(shapeHolder in shapeHolderList.values) {
                         displayShapeView(shapeHolder)
                     }
@@ -165,10 +165,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-
     override fun onBackPressed() {
-        // do nothing.
     }
 
-
+    override fun onClick(v: View?) {
+    }
 }

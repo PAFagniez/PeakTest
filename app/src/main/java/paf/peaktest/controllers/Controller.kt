@@ -47,13 +47,12 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
 
     private fun generateUniqueId() : Int {
-        val id = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             View.generateViewId()
         } else {
             IdGeneratorHelper.generateViewId()
         }
-
-        return id
     }
 
     fun setNewShapeToShapeHolder(shapeHolder: ShapeHolder){
@@ -80,7 +79,7 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
             val lastModifiedList = actionList[actionNumber]
 
             if (lastModifiedList != null && !lastModifiedList.isEmpty()) {
-                val lastModifiedShapeHolder = lastModifiedList.get(actionNumber)
+                val lastModifiedShapeHolder = lastModifiedList[actionNumber]
 
                 if(lastModifiedShapeHolder != null){
                     removeShapeHolderFromList(lastModifiedShapeHolder, lastModifiedShapeHolder.actionNumber)

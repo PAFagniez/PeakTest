@@ -13,7 +13,7 @@ import paf.peaktest.data.ShapeEnum
 class StatsActivity : AppCompatActivity(), View.OnClickListener{
 
     companion object {
-        private val CONTROLLER_KEY = "CONTROLLER"
+        private const val CONTROLLER_KEY = "CONTROLLER"
     }
 
     private var squareNumber: Int = 0
@@ -58,7 +58,7 @@ class StatsActivity : AppCompatActivity(), View.OnClickListener{
     }
 
     override fun onClick(p0: View?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onBackPressed() {
