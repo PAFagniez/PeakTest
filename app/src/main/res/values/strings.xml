@@ -4,6 +4,7 @@
     <string name="undo">Undo</string>
     <string name="delete">Delete</string>
     <string name="stats">Stats</string>
+    <string name="back">Back</string>
 
     <!--Stats Activity-->
     <string name="statsSquares">Squares :</string>
