@@ -123,12 +123,7 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
     private fun addNewShapeHolderToListAndUpdateActionList(shapeHolder: ShapeHolder) {
         val shape = shapeHolder.currentShape
-        val shapeHolderList = when(shape) {
-            ShapeEnum.SQUARE -> squareHolderList
-            ShapeEnum.CIRCLE -> circleHolderList
-            ShapeEnum.TRIANGLE -> triangleHolderList
-            null -> deletedHolderList
-        }
+        val shapeHolderList = getShapeHolderList(shape)
 
         if(!shapeHolder.actionList.isEmpty()){
             shapeHolderList[shapeHolder.actionNumber] = shapeHolder
@@ -141,24 +136,14 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
     private fun removeShapeHolderFromList(shapeHolder: ShapeHolder, actionNumber: Int) {
         val shape = shapeHolder.currentShape
-        val shapeHolderList = when(shape) {
-            ShapeEnum.SQUARE -> squareHolderList
-            ShapeEnum.CIRCLE -> circleHolderList
-            ShapeEnum.TRIANGLE -> triangleHolderList
-            null -> deletedHolderList
-        }
+        val shapeHolderList = getShapeHolderList(shape)
 
         shapeHolderList.remove(actionNumber)
         updateActionList(shapeHolder)
     }
 
     private fun updateActionList(shapeHolder: ShapeHolder){
-        val shapeHolderList = when(shapeHolder.currentShape) {
-            ShapeEnum.SQUARE -> squareHolderList
-            ShapeEnum.CIRCLE -> circleHolderList
-            ShapeEnum.TRIANGLE -> triangleHolderList
-            null -> deletedHolderList
-        }
+        val shapeHolderList = getShapeHolderList(shapeHolder.currentShape)
 
         if(shapeHolderList.size > 1 && !actionList.isEmpty()){
             val lastKeyOfList = getPreviousKeyFromShapeHolderList(shapeHolderList)
@@ -178,6 +163,13 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
             ShapeEnum.TRIANGLE -> triangleHolderList
             null -> deletedHolderList
         }
+    }
+
+    fun deleteShapeGroup(shape: ShapeEnum) {
+        val shapeHolderList = getShapeHolderList(shape)
+
+        while (shapeHolderList.isNotEmpty())
+            deleteShapeHolder(shapeHolderList.lastEntry().value)
     }
 
     fun getSquareNumber(): Int{

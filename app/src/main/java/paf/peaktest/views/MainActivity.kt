@@ -2,6 +2,7 @@
 
 package paf.peaktest.views
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         private val CONTROLLER_KEY = "CONTROLLER"
+        private val DELETE_SHAPE_GROUPS = 0
         private const val SHAPE_WIDTH = 64
         private const val SHAPE_HEIGHT = 64
     }
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         statsButton.setOnClickListener {
             val statIntent = Intent(this, StatsActivity::class.java)
             statIntent.putExtra(CONTROLLER_KEY, controller)
-            startActivity(statIntent)
+            startActivityForResult(statIntent, DELETE_SHAPE_GROUPS)
         }
     }
 
@@ -135,6 +137,32 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == DELETE_SHAPE_GROUPS){
+            if(resultCode == Activity.RESULT_OK){
+                this.controller = data?.getSerializableExtra(CONTROLLER_KEY) as Controller
+                refreshDisplayArea()
+            }
+        }
+    }
+
+    private fun refreshDisplayArea() {
+
+        val actionList = this.controller.actionList
+        displayArea.removeAllViews()
+        if(!actionList.isEmpty()){
+            for(shapeHolderList in actionList.values) {
+                if(!shapeHolderList.isEmpty() && shapeHolderList.lastEntry().value.currentShape != null){
+                    for(shapeHolder in shapeHolderList.values) {
+                        displayShapeView(shapeHolder)
+                    }
+                }
+            }
+        }
     }
 
 
