@@ -53,12 +53,7 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
 
     fun setNewShapeToShapeHolder(shapeHolder: ShapeHolder){
         val currentShape = shapeHolder.currentShape
-        val newShape: ShapeEnum? = when(currentShape) {
-            ShapeEnum.SQUARE -> ShapeEnum.CIRCLE
-            ShapeEnum.CIRCLE -> ShapeEnum.TRIANGLE
-            ShapeEnum.TRIANGLE -> ShapeEnum.SQUARE
-            else -> null
-        }
+        val newShape: ShapeEnum? = getNewShape(currentShape)
 
         val shapeHolderList = getShapeHolderList(currentShape)
         val updatedShapeHolder = shapeHolderList[shapeHolder.actionNumber]
@@ -154,6 +149,15 @@ class Controller(displayAreaWidth: Int, displayAreaHeight: Int, shapeWidth: Int,
             ShapeEnum.CIRCLE -> circleHolderList
             ShapeEnum.TRIANGLE -> triangleHolderList
             null -> deletedHolderList
+        }
+    }
+
+    private fun getNewShape(shape: ShapeEnum?): ShapeEnum? {
+        return when(shape) {
+            ShapeEnum.SQUARE -> ShapeEnum.CIRCLE
+            ShapeEnum.CIRCLE -> ShapeEnum.TRIANGLE
+            ShapeEnum.TRIANGLE -> ShapeEnum.SQUARE
+            else -> null
         }
     }
 
